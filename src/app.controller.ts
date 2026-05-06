@@ -1,15 +1,13 @@
 import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { PrismaService } from './prisma/prisma.service';
+import { tb_com_cliente } from '@prisma/client';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
-  @Get('hello')
-  getHello(): { message: string; timestamp: string } {
-    return {
-      message: 'NestJS OK Testado!',
-      timestamp: new Date().toISOString(),
-    };
+  @Get('clientes')
+  async listarClientes(): Promise<tb_com_cliente[]> {
+    return this.prisma.tb_com_cliente.findMany();
   }
 }
