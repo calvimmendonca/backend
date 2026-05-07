@@ -1,19 +1,22 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // CORS para permitir chamadas do Next.js
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: process.env.CORS_ORIGIN ?? 'http://localhost:3000',
     credentials: true,
   });
 
-  // Prefixo global para rotas API
   app.setGlobalPrefix('api');
+  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalInterceptors(new ResponseInterceptor());
 
-  await app.listen(3017);
-  console.log(`   Backend rodando em: http://localhost:3017`);
+  const port = process.env.PORT ?? 3017;
+  await app.listen(port);
+  console.log(`Backend rodando em: http://localhost:${port}`);
 }
 void bootstrap();
