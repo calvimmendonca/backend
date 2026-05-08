@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
+import { CidadeModule } from './cidade/cidade.module';
 
 @Module({
-  imports: [],
+  imports: [CidadeModule],
 })
 export class ComModule {}
