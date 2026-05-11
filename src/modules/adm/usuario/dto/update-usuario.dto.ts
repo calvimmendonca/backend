@@ -17,4 +17,5 @@ export class UpdateUsuarioDto {
   vch_baicusr?:     string;
   int_numendusr?:   number;
   vch_obsusr?:      string;
+  vch_creusr?:      string;
 }

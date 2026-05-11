@@ -4,6 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model sysstgadmdb {
@@ -194,11 +195,41 @@ model tb_adm_grupo_formulario {
   @@id([int_codgrpusr, int_codfmr], map: "pk__tb_adm_grupo_for__239e4dcf")
 }
 
+model tb_adm_grupo_menu {
+  int_codgrpusr Int
+  int_codmnu    Int
+  chr_flgsel    String @default("N") @db.Char(1)
+  chr_flgisr    String @default("N") @db.Char(1)
+  chr_flgdel    String @default("N") @db.Char(1)
+  chr_flgalt    String @default("N") @db.Char(1)
+
+  tb_adm_grupo_usuario tb_adm_grupo_usuario @relation(fields: [int_codgrpusr], references: [int_codgrpusr], onDelete: NoAction, onUpdate: NoAction)
+  tb_adm_menu          tb_adm_menu          @relation(fields: [int_codmnu], references: [int_codmnu], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([int_codgrpusr, int_codmnu])
+}
+
+model tb_adm_menu {
+  int_codmnu    Int     @id @default(autoincrement())
+  int_codmnupai Int?
+  vch_nommnu    String  @db.VarChar(60)
+  vch_desmnu    String? @db.VarChar(200)
+  vch_rtamnu    String? @db.VarChar(200)
+  vch_icnmnu    String? @db.VarChar(50)
+  int_ordmnu    Int     @default(0)
+  chr_stamnu    String  @default("S") @db.Char(1)
+  chr_vsbmnu    String  @default("S") @db.Char(1)
+  chr_flhmnu    String  @default("N") @db.Char(1)
+
+  tb_adm_grupo_menu tb_adm_grupo_menu[]
+}
+
 model tb_adm_grupo_usuario {
   int_codgrpusr        Int                    @id(map: "pk__tb_adm_grupo_usu__6f1576f7") @default(autoincrement())
   vch_desgrpusr        String                 @db.VarChar(35)
   chr_flgicpbcodds     String?                @db.Char(1)
   tb_adm_usuario_grupo tb_adm_usuario_grupo[]
+  tb_adm_grupo_menu    tb_adm_grupo_menu[]
 }
 
 model tb_adm_log_erro {

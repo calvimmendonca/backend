@@ -22,6 +22,7 @@ const selectFields = {
   vch_cepusr:    true,
   int_numendusr: true,
   vch_obsusr:    true,
+  vch_creusr:    true,
   tb_adm_status_usuario: { select: { vch_desstausr: true } },
   tb_adm_tipo_usuario:   { select: { vch_destipusr: true } },
   tb_adm_cargo:          { select: { vch_descgr:    true } },
