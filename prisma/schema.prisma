@@ -196,40 +196,40 @@ model tb_adm_grupo_formulario {
 }
 
 model tb_adm_grupo_menu {
-  int_codgrpusr Int
-  int_codmnu    Int
-  chr_flgsel    String @default("N") @db.Char(1)
-  chr_flgisr    String @default("N") @db.Char(1)
-  chr_flgdel    String @default("N") @db.Char(1)
-  chr_flgalt    String @default("N") @db.Char(1)
-
-  tb_adm_grupo_usuario tb_adm_grupo_usuario @relation(fields: [int_codgrpusr], references: [int_codgrpusr], onDelete: NoAction, onUpdate: NoAction)
-  tb_adm_menu          tb_adm_menu          @relation(fields: [int_codmnu], references: [int_codmnu], onDelete: NoAction, onUpdate: NoAction)
-
-  @@id([int_codgrpusr, int_codmnu])
+  int_codgrpmnu        Int                  @id @default(autoincrement())
+  int_codgrpusr        Int
+  int_codmnu           Int
+  chr_flgsel           String?              @default("S") @db.Char(1)
+  chr_flgisr           String?              @default("N") @db.Char(1)
+  chr_flgdel           String?              @default("N") @db.Char(1)
+  chr_flgalt           String?              @default("N") @db.Char(1)
+  tb_adm_grupo_usuario tb_adm_grupo_usuario @relation(fields: [int_codgrpusr], references: [int_codgrpusr], onDelete: NoAction, onUpdate: NoAction, map: "fk_adm_grupo_menu_grupo")
+  tb_adm_menu          tb_adm_menu          @relation(fields: [int_codmnu], references: [int_codmnu], onDelete: NoAction, onUpdate: NoAction, map: "fk_adm_grupo_menu_menu")
 }
 
 model tb_adm_menu {
-  int_codmnu    Int     @id @default(autoincrement())
-  int_codmnupai Int?
-  vch_nommnu    String  @db.VarChar(60)
-  vch_desmnu    String? @db.VarChar(200)
-  vch_rtamnu    String? @db.VarChar(200)
-  vch_icnmnu    String? @db.VarChar(50)
-  int_ordmnu    Int     @default(0)
-  chr_stamnu    String  @default("S") @db.Char(1)
-  chr_vsbmnu    String  @default("S") @db.Char(1)
-  chr_flhmnu    String  @default("N") @db.Char(1)
-
+  int_codmnu        Int                 @id @default(autoincrement())
+  int_codmnupai     Int?
+  vch_nommnu        String              @db.VarChar(100)
+  vch_desmnu        String?             @db.VarChar(255)
+  vch_rtamnu        String?             @db.VarChar(255)
+  vch_icnmnu        String?             @db.VarChar(100)
+  int_ordmnu        Int?                @default(0)
+  chr_stamnu        String?             @default("S") @db.Char(1)
+  chr_vsbmnu        String?             @default("S") @db.Char(1)
+  chr_flhmnu        String?             @default("N") @db.Char(1)
   tb_adm_grupo_menu tb_adm_grupo_menu[]
+  tb_adm_menu       tb_adm_menu?        @relation("tb_adm_menuTotb_adm_menu", fields: [int_codmnupai], references: [int_codmnu], onDelete: NoAction, onUpdate: NoAction, map: "fk_menu_pai")
+  other_tb_adm_menu tb_adm_menu[]       @relation("tb_adm_menuTotb_adm_menu")
 }
 
 model tb_adm_grupo_usuario {
   int_codgrpusr        Int                    @id(map: "pk__tb_adm_grupo_usu__6f1576f7") @default(autoincrement())
   vch_desgrpusr        String                 @db.VarChar(35)
   chr_flgicpbcodds     String?                @db.Char(1)
-  tb_adm_usuario_grupo tb_adm_usuario_grupo[]
+  chr_flgstagrpusr     String?                @db.Char(1)
   tb_adm_grupo_menu    tb_adm_grupo_menu[]
+  tb_adm_usuario_grupo tb_adm_usuario_grupo[]
 }
 
 model tb_adm_log_erro {
@@ -894,7 +894,7 @@ model tb_com_cliente {
   int_codstscli                                               Int
   int_codtipcli                                               Int
   vch_cgccpfcli                                               String                           @db.VarChar(14)
-  vch_insestcli                                               String?                          @db.VarChar(16)
+  vch_doccli                                                  String?                          @db.VarChar(16)
   vch_nomcli                                                  String                           @db.VarChar(60)
   vch_nomrdccli                                               String?                          @db.VarChar(30)
   chr_cepcli                                                  String?                          @db.Char(8)
@@ -1071,7 +1071,7 @@ model tb_com_cliente_historico_saude {
   tb_com_cliente                             tb_com_cliente                               @relation(fields: [bin_codcli], references: [bin_codcli], onDelete: NoAction, onUpdate: NoAction, map: "fk_tb_com_cliente_historico_saude_tb_com_cliente")
   tb_com_fornecedor                          tb_com_fornecedor?                           @relation(fields: [int_codfrn], references: [int_codfrn], onDelete: NoAction, onUpdate: NoAction, map: "fk_tb_com_cliente_historico_saude_tb_com_fornecedor")
   tb_com_cliente_historico_saude_x_patologia tb_com_cliente_historico_saude_x_patologia[]
-  tb_com_cliente_historico_saude_x_servico   tb_com_cliente_historico_saude_x_servico[]   @ignore
+  tb_com_cliente_historico_saude_x_servico   tb_com_cliente_historico_saude_x_servico[] @ignore
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -2042,8 +2042,8 @@ model tb_com_produto {
   vch_codprdori                                                                String?                              @db.VarChar(15)
   int_tipprd                                                                   Int
   vch_desprd                                                                   String                               @db.VarChar(60)
-  chr_codund                                                                   String                               @db.Char(2)
-  int_codcat                                                                   Int
+  chr_codund                                                                   String?                              @db.Char(2)
+  int_codcat                                                                   Int                                  @default(1)
   dec_pcovndprd                                                                Decimal?                             @default(0) @db.Decimal(18, 4)
   dec_qdeetqatuprd                                                             Decimal?                             @default(0) @db.Decimal(18, 3)
   dec_vlrdscflx                                                                Decimal?                             @db.Decimal(18, 2)
@@ -2080,7 +2080,7 @@ model tb_com_produto {
   dec_alqpisprd                                                                Decimal                              @default(0) @db.Decimal(18, 2)
   dec_alqcrbfnmsegsocprd                                                       Decimal                              @default(0) @db.Decimal(18, 2)
   vch_sittbtprd                                                                String?                              @db.VarChar(3)
-  chr_flgindpdcprd                                                             String                               @default("T") @db.Char(1)
+  chr_flgindpdcprd                                                             String?                              @db.Char(1)
   chr_sittbtecfprd                                                             String?                              @db.Char(1)
   vch_codncmprd                                                                String?                              @db.VarChar(8)
   chr_codtipncmprd                                                             String?                              @db.Char(2)
@@ -2089,6 +2089,7 @@ model tb_com_produto {
   int_tipdtzbseicmprd                                                          Int                                  @default(3)
   int_tipdtzbseicmsbtprd                                                       Int?
   int_codtamprd                                                                Int?
+  int_tposvc                                                                   Int?                                 @default(0)
   tb_chk_movimentacao_item                                                     tb_chk_movimentacao_item[]
   tb_com_atualiza_custo_nf                                                     tb_com_atualiza_custo_nf[]
   tb_com_categoria_produto                                                     tb_com_categoria_produto[]
@@ -2115,7 +2116,6 @@ model tb_com_produto {
   tb_com_produto_tamanho                                                       tb_com_produto_tamanho?              @relation(fields: [int_codtamprd], references: [int_codtamprd], onDelete: NoAction, onUpdate: NoAction, map: "fk_tb_com_produto_tb_com_produto_tamanho")
   tb_com_tipo_movimento_tb_com_produto_int_codtipmovenrTotb_com_tipo_movimento tb_com_tipo_movimento?               @relation("tb_com_produto_int_codtipmovenrTotb_com_tipo_movimento", fields: [int_codtipmovenr], references: [int_codtipmov], onDelete: NoAction, onUpdate: NoAction, map: "fk_tb_com_produto_tb_com_tipo_movimento_entrada")
   tb_com_tipo_movimento_tb_com_produto_int_codtipmovsaiTotb_com_tipo_movimento tb_com_tipo_movimento?               @relation("tb_com_produto_int_codtipmovsaiTotb_com_tipo_movimento", fields: [int_codtipmovsai], references: [int_codtipmov], onDelete: NoAction, onUpdate: NoAction, map: "fk_tb_com_produto_tb_com_tipo_movimento_saida")
-  tb_com_unidade                                                               tb_com_unidade                       @relation(fields: [chr_codund], references: [chr_codund], onDelete: NoAction, onUpdate: NoAction, map: "fk_tb_com_produto_tb_com_unidade")
   tb_com_produto_desconto                                                      tb_com_produto_desconto[]
   tb_com_produto_fornecedor                                                    tb_com_produto_fornecedor[]
   tb_com_tabela_preco_produto                                                  tb_com_tabela_preco_produto[]
@@ -2451,7 +2451,6 @@ model tb_com_transportadora {
 model tb_com_unidade {
   chr_codund                 String                       @id(map: "pk_tb_com_unidade") @db.Char(2)
   vch_desund                 String                       @db.VarChar(30)
-  tb_com_produto             tb_com_produto[]
   tb_com_unidade_alternativa tb_com_unidade_alternativa[]
 }
 

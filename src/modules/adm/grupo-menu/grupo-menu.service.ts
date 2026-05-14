@@ -5,10 +5,10 @@ export interface MenuPermissao {
   int_codmnu:    number;
   vch_nommnu:    string;
   int_codmnupai: number | null;
-  chr_flgsel:    string;
-  chr_flgisr:    string;
-  chr_flgalt:    string;
-  chr_flgdel:    string;
+  chr_flgsel:    string | null;
+  chr_flgisr:    string | null;
+  chr_flgalt:    string | null;
+  chr_flgdel:    string | null;
 }
 
 @Injectable()
@@ -82,8 +82,8 @@ export class GrupoMenuService {
 
   async atualizarPermissoes(grupoId: number, menus: { int_codmnu: number; chr_flgsel: string; chr_flgisr: string; chr_flgalt: string; chr_flgdel: string }[]) {
     await Promise.all(menus.map(m =>
-      this.prisma.tb_adm_grupo_menu.update({
-        where: { int_codgrpusr_int_codmnu: { int_codgrpusr: grupoId, int_codmnu: m.int_codmnu } },
+      this.prisma.tb_adm_grupo_menu.updateMany({
+        where: { int_codgrpusr: grupoId, int_codmnu: m.int_codmnu },
         data: { chr_flgsel: m.chr_flgsel, chr_flgisr: m.chr_flgisr, chr_flgalt: m.chr_flgalt, chr_flgdel: m.chr_flgdel },
       })
     ));

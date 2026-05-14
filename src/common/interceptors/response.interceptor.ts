@@ -1,6 +1,7 @@
 import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { serialize } from '../utils/serialize.util';
 
 @Injectable()
 export class ResponseInterceptor<T> implements NestInterceptor<T> {
@@ -8,7 +9,7 @@ export class ResponseInterceptor<T> implements NestInterceptor<T> {
     return next.handle().pipe(
       map((data) => ({
         success: true,
-        data,
+        data: serialize(data),
         timestamp: new Date().toISOString(),
       })),
     );

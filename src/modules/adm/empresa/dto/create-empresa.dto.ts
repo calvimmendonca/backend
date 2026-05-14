@@ -21,4 +21,23 @@ export class CreateEmpresaDto {
   vch_obsemp?:        string;
   vch_nomctoemp?:     string;
   int_codempmtzemp?:  number;
+
+  // Tributação
+  dec_alqissemp?:           number;
+  dec_alqpisemp?:           number;
+  dec_alqcrbfnmsegsocemp?:  number;
+  dec_alqimprndemp?:        number;
+  dec_alqcrbsocemp?:        number;
+  dec_alqinunacsegsocemp?:  number;
+  dec_alqsmpnacemp?:        number;
+  vch_insmncemp?:           string;
+  int_codrgmtbtemp?:        string;
+
+  // Sintegra / NF
+  chr_codopeemp?:     string;
+  chr_modnotfscemp?:  string;
+  vch_sernotfscemp?:  string;
+  tin_codidtettarqmgnemp?:  number;
+  tin_codidtnatopeemp?:     number;
+  tin_codfniaprarqmgnemp?:  number;
 }

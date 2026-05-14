@@ -14,12 +14,12 @@ export class AuthService {
 
   async login(dto: LoginDto) {
     const usuario = await this.prisma.tb_adm_usuario.findFirst({
-      where: { vch_lgnusr: dto.login },
+      where: { vch_lgnusr: { equals: dto.login, mode: 'insensitive' } },
     });
 
     this.logger.debug(usuario);
 
-    if (!usuario || usuario.vch_pswusr !== dto.senha) {
+    if (!usuario || usuario.vch_pswusr?.trim() !== dto.senha.trim()) {
       throw new UnauthorizedException('Credenciais inválidas');
     }
 
