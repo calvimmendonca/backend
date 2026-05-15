@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e \"require\\('dotenv'\\); console.log\\('ok'\\)\")",
+      "Bash(not exist *)",
+      "PowerShell(New-Item *)",
+      "Bash(npx prisma *)",
+      "Bash(npm run *)"
+    ]
+  }
+}

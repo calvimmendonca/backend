@@ -4,6 +4,24 @@ import { CreateClienteDto } from './dto/create-cliente.dto';
 import { UpdateClienteDto } from './dto/update-cliente.dto';
 import { FilterClienteDto } from './dto/filter-cliente.dto';
 
+const DATE_FIELDS = new Set([
+  'dat_nsccli', 'dat_datpfrvnccli', 'dat_datterasncli',
+  'dat_datepdidtcli', 'dat_datemsceinsccli',
+]);
+const BIGINT_FIELDS = new Set(['bin_codclimtz', 'bin_codptucli', 'bin_carnaccli']);
+
+function prepareClienteData(dto: Partial<CreateClienteDto>) {
+  return Object.fromEntries(
+    Object.entries(dto)
+      .filter(([, v]) => v !== undefined)
+      .map(([k, v]) => {
+        if (DATE_FIELDS.has(k))   return [k, v ? new Date(v as string) : null];
+        if (BIGINT_FIELDS.has(k)) return [k, v != null ? BigInt(v as number) : null];
+        return [k, v];
+      }),
+  );
+}
+
 const clienteSelect = {
   bin_codcli: true,
   int_codstscli: true,
@@ -206,82 +224,7 @@ export class ClienteService {
     await this.findOne(id);
     return this.prisma.tb_com_cliente.update({
       where: { bin_codcli: id },
-      data: {
-        ...(dto.int_codstscli != null && { int_codstscli: dto.int_codstscli }),
-        ...(dto.int_codtipcli != null && { int_codtipcli: dto.int_codtipcli }),
-        ...(dto.vch_cgccpfcli != null && { vch_cgccpfcli: dto.vch_cgccpfcli }),
-        ...(dto.vch_nomcli != null && { vch_nomcli: dto.vch_nomcli }),
-        ...(dto.chr_tippescli != null && { chr_tippescli: dto.chr_tippescli }),
-        ...(dto.vch_doccli !== undefined && { vch_doccli: dto.vch_doccli }),
-        ...(dto.vch_nomrdccli !== undefined && { vch_nomrdccli: dto.vch_nomrdccli }),
-        ...(dto.chr_cepcli !== undefined && { chr_cepcli: dto.chr_cepcli }),
-        ...(dto.vch_estcli !== undefined && { vch_estcli: dto.vch_estcli }),
-        ...(dto.vch_cidcli !== undefined && { vch_cidcli: dto.vch_cidcli }),
-        ...(dto.vch_baicli !== undefined && { vch_baicli: dto.vch_baicli }),
-        ...(dto.vch_endcli !== undefined && { vch_endcli: dto.vch_endcli }),
-        ...(dto.int_numendcli !== undefined && { int_numendcli: dto.int_numendcli }),
-        ...(dto.vch_cplendcli !== undefined && { vch_cplendcli: dto.vch_cplendcli }),
-        ...(dto.vch_telcli !== undefined && { vch_telcli: dto.vch_telcli }),
-        ...(dto.vch_faxcli !== undefined && { vch_faxcli: dto.vch_faxcli }),
-        ...(dto.vch_celcli !== undefined && { vch_celcli: dto.vch_celcli }),
-        ...(dto.dat_nsccli !== undefined && { dat_nsccli: dto.dat_nsccli ? new Date(dto.dat_nsccli) : null }),
-        ...(dto.vch_crecli !== undefined && { vch_crecli: dto.vch_crecli }),
-        ...(dto.vch_nomrefcomcli_1 !== undefined && { vch_nomrefcomcli_1: dto.vch_nomrefcomcli_1 }),
-        ...(dto.vch_telrefcomcli_1 !== undefined && { vch_telrefcomcli_1: dto.vch_telrefcomcli_1 }),
-        ...(dto.vch_nomrefcomcli_2 !== undefined && { vch_nomrefcomcli_2: dto.vch_nomrefcomcli_2 }),
-        ...(dto.vch_telrefcomcli_2 !== undefined && { vch_telrefcomcli_2: dto.vch_telrefcomcli_2 }),
-        ...(dto.vch_nomrefcomcli_3 !== undefined && { vch_nomrefcomcli_3: dto.vch_nomrefcomcli_3 }),
-        ...(dto.vch_telrefcomcli_3 !== undefined && { vch_telrefcomcli_3: dto.vch_telrefcomcli_3 }),
-        ...(dto.dec_vlrrndcli !== undefined && { dec_vlrrndcli: dto.dec_vlrrndcli }),
-        ...(dto.dec_limcrdcli !== undefined && { dec_limcrdcli: dto.dec_limcrdcli }),
-        ...(dto.vch_obscli !== undefined && { vch_obscli: dto.vch_obscli }),
-        ...(dto.dat_datpfrvnccli !== undefined && { dat_datpfrvnccli: dto.dat_datpfrvnccli ? new Date(dto.dat_datpfrvnccli) : null }),
-        ...(dto.chr_sexcli !== undefined && { chr_sexcli: dto.chr_sexcli }),
-        ...(dto.int_codreg !== undefined && { int_codreg: dto.int_codreg }),
-        ...(dto.int_codcid != null && { int_codcid: dto.int_codcid }),
-        ...(dto.vch_endentcli !== undefined && { vch_endentcli: dto.vch_endentcli }),
-        ...(dto.vch_endcobcli !== undefined && { vch_endcobcli: dto.vch_endcobcli }),
-        ...(dto.chr_flgmtzfil !== undefined && { chr_flgmtzfil: dto.chr_flgmtzfil }),
-        ...(dto.bin_codclimtz !== undefined && { bin_codclimtz: dto.bin_codclimtz != null ? BigInt(dto.bin_codclimtz) : null }),
-        ...(dto.vch_codmtccli !== undefined && { vch_codmtccli: dto.vch_codmtccli }),
-        ...(dto.vch_numbco1 !== undefined && { vch_numbco1: dto.vch_numbco1 }),
-        ...(dto.vch_numage1 !== undefined && { vch_numage1: dto.vch_numage1 }),
-        ...(dto.vch_numcntcrr1 !== undefined && { vch_numcntcrr1: dto.vch_numcntcrr1 }),
-        ...(dto.chr_digcntcrr1 !== undefined && { chr_digcntcrr1: dto.chr_digcntcrr1 }),
-        ...(dto.vch_dtlcntcrr1 !== undefined && { vch_dtlcntcrr1: dto.vch_dtlcntcrr1 }),
-        ...(dto.vch_numbco2 !== undefined && { vch_numbco2: dto.vch_numbco2 }),
-        ...(dto.vch_numage2 !== undefined && { vch_numage2: dto.vch_numage2 }),
-        ...(dto.vch_numcntcrr2 !== undefined && { vch_numcntcrr2: dto.vch_numcntcrr2 }),
-        ...(dto.chr_digcntcrr2 !== undefined && { chr_digcntcrr2: dto.chr_digcntcrr2 }),
-        ...(dto.vch_dtlcntcrr2 !== undefined && { vch_dtlcntcrr2: dto.vch_dtlcntcrr2 }),
-        ...(dto.vch_numbco3 !== undefined && { vch_numbco3: dto.vch_numbco3 }),
-        ...(dto.vch_numage3 !== undefined && { vch_numage3: dto.vch_numage3 }),
-        ...(dto.vch_numcntcrr3 !== undefined && { vch_numcntcrr3: dto.vch_numcntcrr3 }),
-        ...(dto.chr_digcntcrr3 !== undefined && { chr_digcntcrr3: dto.chr_digcntcrr3 }),
-        ...(dto.vch_dtlcntcrr3 !== undefined && { vch_dtlcntcrr3: dto.vch_dtlcntcrr3 }),
-        ...(dto.chr_flgterasncli !== undefined && { chr_flgterasncli: dto.chr_flgterasncli }),
-        ...(dto.dat_datterasncli !== undefined && { dat_datterasncli: dto.dat_datterasncli ? new Date(dto.dat_datterasncli) : null }),
-        ...(dto.vch_desitvcli !== undefined && { vch_desitvcli: dto.vch_desitvcli }),
-        ...(dto.int_codemp !== undefined && { int_codemp: dto.int_codemp }),
-        ...(dto.int_codmtvstscli !== undefined && { int_codmtvstscli: dto.int_codmtvstscli }),
-        ...(dto.int_numdiapodcli !== undefined && { int_numdiapodcli: dto.int_numdiapodcli }),
-        ...(dto.int_codusr !== undefined && { int_codusr: dto.int_codusr }),
-        ...(dto.int_codusrpcp !== undefined && { int_codusrpcp: dto.int_codusrpcp }),
-        ...(dto.vch_orgemsidtcli !== undefined && { vch_orgemsidtcli: dto.vch_orgemsidtcli }),
-        ...(dto.dat_datepdidtcli !== undefined && { dat_datepdidtcli: dto.dat_datepdidtcli ? new Date(dto.dat_datepdidtcli) : null }),
-        ...(dto.bin_codptucli !== undefined && { bin_codptucli: dto.bin_codptucli != null ? BigInt(dto.bin_codptucli) : null }),
-        ...(dto.vch_ceinsccli !== undefined && { vch_ceinsccli: dto.vch_ceinsccli }),
-        ...(dto.dat_datemsceinsccli !== undefined && { dat_datemsceinsccli: dto.dat_datemsceinsccli ? new Date(dto.dat_datemsceinsccli) : null }),
-        ...(dto.chr_estceinsccli !== undefined && { chr_estceinsccli: dto.chr_estceinsccli }),
-        ...(dto.vch_livceinsccli !== undefined && { vch_livceinsccli: dto.vch_livceinsccli }),
-        ...(dto.vch_folceinsccli !== undefined && { vch_folceinsccli: dto.vch_folceinsccli }),
-        ...(dto.bin_carnaccli !== undefined && { bin_carnaccli: dto.bin_carnaccli != null ? BigInt(dto.bin_carnaccli) : null }),
-        ...(dto.vch_nompaicli !== undefined && { vch_nompaicli: dto.vch_nompaicli }),
-        ...(dto.vch_nommaecli !== undefined && { vch_nommaecli: dto.vch_nommaecli }),
-        ...(dto.vch_insmnccli !== undefined && { vch_insmnccli: dto.vch_insmnccli }),
-        ...(dto.chr_tiprecimpcli !== undefined && { chr_tiprecimpcli: dto.chr_tiprecimpcli }),
-        ...(dto.int_codati !== undefined && { int_codati: dto.int_codati }),
-      },
+      data: prepareClienteData(dto) as Parameters<typeof this.prisma.tb_com_cliente.update>[0]['data'],
       select: clienteSelect,
     });
   }

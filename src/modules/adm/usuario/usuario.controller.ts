@@ -1,8 +1,7 @@
-import { Controller, Get, Post, Delete, Param, Body, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Param, Body, ParseIntPipe } from '@nestjs/common';
 import { UsuarioService }   from './usuario.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
-import { Patch } from '@nestjs/common';
 
 @Controller('usuarios')
 export class UsuarioController {
@@ -10,6 +9,9 @@ export class UsuarioController {
 
   @Get()
   findAll() { return this.usuarioService.findAll(); }
+
+  @Get('supervisores')
+  findSupervisores() { return this.usuarioService.findSupervisores(); }
 
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) { return this.usuarioService.findOne(id); }

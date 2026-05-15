@@ -1,5 +1,4 @@
-export class UpdateAtividadeDto {
-  vch_desati?:       string;
-  vch_codcneati?:    string;
-  dec_alqisscneati?: number;
-}
+import { PartialType } from '@nestjs/mapped-types';
+import { CreateAtividadeDto } from './create-atividade.dto';
+
+export class UpdateAtividadeDto extends PartialType(CreateAtividadeDto) {}

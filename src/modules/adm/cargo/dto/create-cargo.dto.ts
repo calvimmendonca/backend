@@ -1,4 +1,13 @@
+import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
+
 export class CreateCargoDto {
-  vch_descgr!: string;
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(35)
+  vch_descgr: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(1)
   chr_flgicpbcodds?: string;
 }

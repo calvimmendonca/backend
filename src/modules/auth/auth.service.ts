@@ -1,12 +1,11 @@
-import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcryptjs';
 import { PrismaService } from '../../prisma/prisma.service';
 import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
-  private readonly logger = new Logger(AuthService.name);
-
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwt: JwtService,
@@ -17,9 +16,10 @@ export class AuthService {
       where: { vch_lgnusr: { equals: dto.login, mode: 'insensitive' } },
     });
 
-    this.logger.debug(usuario);
+    const hash = usuario?.vch_pswusr?.trim() ?? '';
+    const valid = hash ? await bcrypt.compare(dto.senha.trim(), hash) : false;
 
-    if (!usuario || usuario.vch_pswusr?.trim() !== dto.senha.trim()) {
+    if (!usuario || !valid) {
       throw new UnauthorizedException('Credenciais inválidas');
     }
 

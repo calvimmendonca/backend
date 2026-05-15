@@ -4,29 +4,51 @@ import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 
 const selectFields = {
-  int_codusr:    true,
-  int_codstausr: true,
-  int_codemp:    true,
-  vch_lgnusr:    true,
-  vch_nomusr:    true,
-  int_codcgr:    true,
-  int_codtipusr: true,
-  vch_pswusr:    true,
-  tin_nivacsusr: true,
-  vch_cgccpfusr: true,
-  vch_numtelusr: true,
-  vch_numcelusr: true,
-  vch_endusr:    true,
-  vch_cidusr:    true,
-  chr_estusr:    true,
-  vch_cepusr:    true,
-  int_numendusr: true,
-  vch_obsusr:    true,
-  vch_creusr:    true,
-  tb_adm_status_usuario: { select: { vch_desstausr: true } },
-  tb_adm_tipo_usuario:   { select: { vch_destipusr: true } },
-  tb_adm_cargo:          { select: { vch_descgr:    true } },
-  tb_adm_empresa:        { select: { vch_nomemp:    true } },
+  int_codusr:          true,
+  int_codstausr:       true,
+  int_codemp:          true,
+  vch_lgnusr:          true,
+  vch_nomusr:          true,
+  int_codcgr:          true,
+  int_codtipusr:       true,
+  vch_pswusr:          true,
+  vch_pswextusr:       true,
+  tin_nivacsusr:       true,
+  chr_flgsupvndusr:    true,
+  // Identificação
+  vch_cgccpfusr:       true,
+  vch_idtusr:          true,
+  vch_numcshregmdcusr: true,
+  int_codram:          true,
+  dat_datnscusr:       true,
+  dat_datcadusr:       true,
+  // Contato
+  vch_numtelusr:       true,
+  vch_numcelusr:       true,
+  vch_creusr:          true,
+  // Endereço
+  vch_cepusr:          true,
+  vch_endusr:          true,
+  int_numendusr:       true,
+  vch_baiusr:          true,
+  vch_cidusr:          true,
+  chr_estusr:          true,
+  vch_obsusr:          true,
+  // Acesso
+  dat_hrainiusr:       true,
+  dat_hrafimusr:       true,
+  // Vínculos
+  bin_codcli:          true,
+  int_codfrn:          true,
+  int_codrep:          true,
+  // Vendas
+  dec_pcndscmax:       true,
+  int_codusrsup:       true,
+  // Relações
+  tb_adm_status_usuario:  { select: { vch_desstausr: true } },
+  tb_adm_tipo_usuario:    { select: { vch_destipusr: true } },
+  tb_adm_cargo:           { select: { vch_descgr:    true } },
+  tb_adm_empresa:         { select: { vch_nomemp:    true } },
 } as const;
 
 const selectEmpresa = {
@@ -41,6 +63,19 @@ const selectGrupo = {
   vch_desgrpusr:    true,
   chr_flgicpbcodds: true,
 } as const;
+
+function parseTimeField(value?: string): Date | undefined {
+  if (!value) return undefined;
+  if (/^\d{2}:\d{2}$/.test(value)) return new Date(`1970-01-01T${value}:00.000Z`);
+  const d = new Date(value);
+  return isNaN(d.getTime()) ? undefined : d;
+}
+
+function parseDateField(value?: string): Date | undefined {
+  if (!value) return undefined;
+  const d = new Date(value);
+  return isNaN(d.getTime()) ? undefined : d;
+}
 
 @Injectable()
 export class UsuarioService {
@@ -70,15 +105,35 @@ export class UsuarioService {
     return usuario;
   }
 
+  async findSupervisores() {
+    return this.prisma.tb_adm_usuario.findMany({
+      where: { int_codtipusr: 14, chr_flgsupvndusr: 'S' },
+      select: { int_codusr: true, vch_nomusr: true },
+      orderBy: { vch_nomusr: 'asc' },
+    });
+  }
+
   create(dto: CreateUsuarioDto) {
-    return this.prisma.tb_adm_usuario.create({ data: dto, select: selectFields });
+    const { dat_hrainiusr, dat_hrafimusr, dat_datnscusr, ...rest } = dto;
+    const data = {
+      ...rest,
+      dat_hrainiusr: parseTimeField(dat_hrainiusr),
+      dat_hrafimusr: parseTimeField(dat_hrafimusr),
+      dat_datnscusr: parseDateField(dat_datnscusr),
+    };
+    return this.prisma.tb_adm_usuario.create({ data, select: selectFields });
   }
 
   async update(id: number, dto: UpdateUsuarioDto) {
     await this.findOne(id);
+    const { dat_hrainiusr, dat_hrafimusr, dat_datnscusr, ...rest } = dto;
+    const data: Record<string, unknown> = { ...rest };
+    if (dat_hrainiusr !== undefined) data.dat_hrainiusr = parseTimeField(dat_hrainiusr);
+    if (dat_hrafimusr !== undefined) data.dat_hrafimusr = parseTimeField(dat_hrafimusr);
+    if (dat_datnscusr !== undefined) data.dat_datnscusr = parseDateField(dat_datnscusr);
     return this.prisma.tb_adm_usuario.update({
       where: { int_codusr: id },
-      data: dto,
+      data,
       select: selectFields,
     });
   }

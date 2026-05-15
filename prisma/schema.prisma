@@ -295,7 +295,7 @@ model tb_adm_usuario {
   vch_nomusr                                                                              String                         @db.VarChar(60)
   int_codcgr                                                                              Int
   int_codtipusr                                                                           Int
-  vch_pswusr                                                                              String?                        @db.VarChar(10)
+  vch_pswusr                                                                              String?                        @db.VarChar(72)
   tin_nivacsusr                                                                           Int                            @default(0) @db.SmallInt
   chr_flgsupvndusr                                                                        String?                        @db.Char(1)
   dat_hrainiusr                                                                           DateTime?                      @db.Timestamp(6)
