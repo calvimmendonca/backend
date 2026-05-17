@@ -7,8 +7,9 @@ import { GrupoUsuarioModule }   from './grupo-usuario/grupo-usuario.module';
 import { UsuarioModule }        from './usuario/usuario.module';
 import { MenuModule }           from './menu/menu.module';
 import { GrupoMenuModule }      from './grupo-menu/grupo-menu.module';
+import { MensagemModule }       from './mensagem/mensagem.module';
 
 @Module({
-  imports: [CargoModule, EmpresaModule, AtividadeModule, EspecialidadeModule, GrupoUsuarioModule, UsuarioModule, MenuModule, GrupoMenuModule],
+  imports: [CargoModule, EmpresaModule, AtividadeModule, EspecialidadeModule, GrupoUsuarioModule, UsuarioModule, MenuModule, GrupoMenuModule, MensagemModule],
 })
 export class AdmModule {}

@@ -37,7 +37,7 @@ export class MenuService {
       orderBy: { int_ordmnu: 'asc' },
     });
 
-    return rows.map((menu) => ({
+    return rows.map((menu: (typeof rows)[number]) => ({
       int_codmnu: menu.int_codmnu,
       int_codmnupai: menu.int_codmnupai ?? null,
       vch_nommnu: menu.vch_nommnu,

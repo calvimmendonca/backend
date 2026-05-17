@@ -244,7 +244,7 @@ model tb_adm_log_erro {
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model tb_adm_mensagem {
-  bin_codmsg                                                   BigInt         @default(autoincrement())
+  bin_codmsg                                                   BigInt         @id @default(autoincrement())
   int_codusrdst                                                Int
   int_codusrrem                                                Int
   vch_titmsg                                                   String         @db.VarChar(100)
@@ -254,8 +254,6 @@ model tb_adm_mensagem {
   chr_flgmsgler                                                String         @default(dbgenerated("0")) @db.Char(1)
   tb_adm_usuario_tb_adm_mensagem_int_codusrdstTotb_adm_usuario tb_adm_usuario @relation("tb_adm_mensagem_int_codusrdstTotb_adm_usuario", fields: [int_codusrdst], references: [int_codusr], onDelete: NoAction, onUpdate: NoAction, map: "fk_tb_adm_mensagem_tb_adm_usuario")
   tb_adm_usuario_tb_adm_mensagem_int_codusrremTotb_adm_usuario tb_adm_usuario @relation("tb_adm_mensagem_int_codusrremTotb_adm_usuario", fields: [int_codusrrem], references: [int_codusr], onDelete: NoAction, onUpdate: NoAction, map: "fk_tb_adm_mensagem_tb_adm_usuario1")
-
-  @@ignore
 }
 
 model tb_adm_status_empresa {
@@ -327,8 +325,8 @@ model tb_adm_usuario {
   vch_pswextusr                                                                           String?                        @db.VarChar(20)
   sysstgadminf                                                                            sysstgadminf[]
   systabusremp                                                                            systabusremp[]
-  tb_adm_mensagem_tb_adm_mensagem_int_codusrdstTotb_adm_usuario                           tb_adm_mensagem[]              @relation("tb_adm_mensagem_int_codusrdstTotb_adm_usuario") @ignore
-  tb_adm_mensagem_tb_adm_mensagem_int_codusrremTotb_adm_usuario                           tb_adm_mensagem[]              @relation("tb_adm_mensagem_int_codusrremTotb_adm_usuario") @ignore
+  tb_adm_mensagem_tb_adm_mensagem_int_codusrdstTotb_adm_usuario                           tb_adm_mensagem[]              @relation("tb_adm_mensagem_int_codusrdstTotb_adm_usuario")
+  tb_adm_mensagem_tb_adm_mensagem_int_codusrremTotb_adm_usuario                           tb_adm_mensagem[]              @relation("tb_adm_mensagem_int_codusrremTotb_adm_usuario")
   tb_adm_status_usuario                                                                   tb_adm_status_usuario          @relation(fields: [int_codstausr], references: [int_codstausr], onDelete: NoAction, onUpdate: NoAction, map: "fk__tb_adm_us__int_c__1be81d6e")
   tb_adm_cargo                                                                            tb_adm_cargo                   @relation(fields: [int_codcgr], references: [int_codcgr], onDelete: NoAction, onUpdate: NoAction, map: "fk__tb_adm_us__int_c__1cdc41a7")
   tb_adm_empresa                                                                          tb_adm_empresa                 @relation(fields: [int_codemp], references: [int_codemp], onDelete: NoAction, onUpdate: NoAction, map: "fk__tb_adm_us__int_c__1dd065e0")

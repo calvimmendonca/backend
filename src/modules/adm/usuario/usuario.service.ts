@@ -150,7 +150,7 @@ export class UsuarioService {
       where: { int_codusr: usuarioId },
       select: { tb_adm_empresa: { select: selectEmpresa } },
     });
-    return vinculos.map(v => v.tb_adm_empresa);
+    return vinculos.map((v: (typeof vinculos)[number]) => v.tb_adm_empresa);
   }
 
   async findEmpresasDisponiveis(usuarioId: number) {
@@ -158,7 +158,7 @@ export class UsuarioService {
       where: { int_codusr: usuarioId },
       select: { int_codemp: true },
     });
-    const ids = vinculadas.map(v => v.int_codemp);
+    const ids = vinculadas.map((v: (typeof vinculadas)[number]) => v.int_codemp);
     return this.prisma.tb_adm_empresa.findMany({
       where: { int_codemp: { notIn: ids.length ? ids : [-1] } },
       select: selectEmpresa,
@@ -189,7 +189,7 @@ export class UsuarioService {
       where: { int_codusr: usuarioId },
       select: { tb_adm_grupo_usuario: { select: selectGrupo } },
     });
-    return vinculos.map(v => v.tb_adm_grupo_usuario);
+    return vinculos.map((v: (typeof vinculos)[number]) => v.tb_adm_grupo_usuario);
   }
 
   async findGruposDisponiveis(usuarioId: number) {
@@ -197,7 +197,7 @@ export class UsuarioService {
       where: { int_codusr: usuarioId },
       select: { int_codgrpusr: true },
     });
-    const ids = vinculados.map(v => v.int_codgrpusr);
+    const ids = vinculados.map((v: (typeof vinculados)[number]) => v.int_codgrpusr);
     return this.prisma.tb_adm_grupo_usuario.findMany({
       where: { int_codgrpusr: { notIn: ids.length ? ids : [-1] } },
       select: selectGrupo,

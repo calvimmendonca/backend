@@ -224,7 +224,8 @@ export class ClienteService {
     await this.findOne(id);
     return this.prisma.tb_com_cliente.update({
       where: { bin_codcli: id },
-      data: prepareClienteData(dto) as Parameters<typeof this.prisma.tb_com_cliente.update>[0]['data'],
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      data: prepareClienteData(dto) as any,
       select: clienteSelect,
     });
   }

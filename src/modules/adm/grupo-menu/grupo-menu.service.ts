@@ -21,7 +21,7 @@ export class GrupoMenuService {
       include: { tb_adm_menu: true },
       orderBy: { tb_adm_menu: { int_ordmnu: 'asc' } },
     });
-    return rows.map(r => ({
+    return rows.map((r: (typeof rows)[number]) => ({
       int_codmnu:    r.int_codmnu,
       vch_nommnu:    r.tb_adm_menu.vch_nommnu,
       int_codmnupai: r.tb_adm_menu.int_codmnupai ?? null,
@@ -37,7 +37,7 @@ export class GrupoMenuService {
       where: { int_codgrpusr: grupoId },
       select: { int_codmnu: true },
     });
-    const ids = vinculados.map(v => v.int_codmnu);
+    const ids = vinculados.map((v: (typeof vinculados)[number]) => v.int_codmnu);
 
     const menus = await this.prisma.tb_adm_menu.findMany({
       where: {
@@ -47,7 +47,7 @@ export class GrupoMenuService {
       orderBy: { int_ordmnu: 'asc' },
     });
 
-    return menus.map(m => ({
+    return menus.map((m: (typeof menus)[number]) => ({
       int_codmnu:    m.int_codmnu,
       vch_nommnu:    m.vch_nommnu,
       int_codmnupai: m.int_codmnupai ?? null,
